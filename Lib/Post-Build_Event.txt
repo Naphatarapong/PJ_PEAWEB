@@ -1,0 +1,17 @@
+  <Target Name="PostBuildMacros">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
+  </Target>
+  <PropertyGroup>
+    <PostBuildEventDependsOn>
+	$(PostBuildEventDependsOn);
+	PostBuildMacros;
+  </PostBuildEventDependsOn>
+    <PostBuildEvent>if $(ConfigurationName) == Release (
+copy /y "$(ProjectDir)$(OutDir)$(TargetFileName)" "$(SolutionDir)..\..\..\CSP.Include\Lib.461\$(TargetName)_@(VersionNumber)$(TargetExt)"
+)</PostBuildEvent>
+  </PropertyGroup>
